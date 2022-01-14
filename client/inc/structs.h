@@ -29,12 +29,14 @@ typedef struct Size_s {
 typedef struct pos_s {
 	int y;
 	int x;
+	int gx;
+	int gy;
+	bool is_percent_x;
+	bool is_percent_y;
 } Pos_t;
 
 typedef struct style_s {
-	SDL_Point position;
-	SDL_Point global_position;
-	Pos_t percentage_position;
+	Pos_t position;
 	anchor_t anchor;
 	Size_t size;
 	SDL_Color background_color;

@@ -3,14 +3,18 @@
 #include "cheers.h"
 
 void obj_down(app_t *app, object_t *object) {
-    object->style.percentage_position.x--;
-    object->style.position.x--;
+    if(object->style.size.height < 600) {
+        object->style.size.width += 10;
+        object->style.size.height += 10;
+    }
 } //////////
 
 void scene_init(app_t *app) {
     style_t root_style = set_clear_style();
-    root_style.percentage_position.x = 50;
-    root_style.percentage_position.y = 50;
+    root_style.position.x = 50;
+    root_style.position.y = 50;
+    root_style.position.is_percent_x = true;
+    root_style.position.is_percent_y = true;
     root_style.size.width = 400;
     root_style.size.height = 200;
     root_style.background_color = set_color(20, 30, 167, 255);
@@ -18,7 +22,8 @@ void scene_init(app_t *app) {
 
     style_t main_style = set_clear_style();
     main_style.position.x = 0;
-    main_style.percentage_position.y = 50;
+    main_style.position.y = 50;
+    main_style.position.is_percent_y = true;
     main_style.size.width = 50;
     main_style.size.height = 10;
     main_style.size.is_percent_width = true;
@@ -30,18 +35,22 @@ void scene_init(app_t *app) {
     main_style.font_size = 24;
 
     style_t in_style = set_clear_style();
-    in_style.percentage_position.x = 50;
-    in_style.percentage_position.y = 50;
+    in_style.position.x = 50;
+    in_style.position.y = 50;
+    in_style.position.is_percent_x = true;
+    in_style.position.is_percent_y = true;
     in_style.size.width = 100;
     in_style.size.height = 100;
     in_style.background_color = set_color(20, 30, 20, 255);
-    in_style.anchor = ANCHOR_BOTTOM_RIGHT;
+    in_style.anchor = ANCHOR_CENTER_CENTER;
 
     style_t img_style = set_clear_style();
     img_style.position.x = 5;
     img_style.position.y = 5;
     img_style.size.width = 90;
     img_style.size.height = 90;
+    img_style.size.is_percent_width = true;
+    img_style.size.is_percent_height = true;
     img_style.texture = render_texture(app, "resource/img/image.png");
     img_style.anchor = ANCHOR_TOP_LEFT;
     img_style.z_index = 1;

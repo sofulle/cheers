@@ -28,10 +28,10 @@ style_t set_clear_style(void) {
     style.size.is_percent_height= false;
     style.position.x = 0;
     style.position.y = 0;
-    style.global_position.x = 0;
-    style.global_position.y = 0;
-    style.percentage_position.x = -1;
-    style.percentage_position.y = -1;
+    style.position.gx = 0;
+    style.position.gy = 0;
+    style.position.is_percent_x = false;
+    style.position.is_percent_y = false;
     style.texture = NULL;
     style.z_index = 0;
     style.global_z_index = 0;

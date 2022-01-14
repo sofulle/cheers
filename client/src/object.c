@@ -100,12 +100,12 @@ void object_draw(app_t *app, object_t *object) {
         return;
     }
 
-    printf("object: %s  w: %d  h: %d  x: %d  y: %d\n", object->id, object->style.size.gwidth, object->style.size.gheight, object->style.position.x, object->style.position.y);
+    //printf("object: %s  w: %d  h: %d  x: %d  y: %d\n", object->id, object->style.size.gwidth, object->style.size.gheight, object->style.position.x, object->style.position.y);
 
     if(object->style.texture != NULL) {
         SDL_Rect dest;
-        dest.x = object->style.global_position.x;
-        dest.y = object->style.global_position.y;
+        dest.x = object->style.position.gx;
+        dest.y = object->style.position.gy;
         dest.w = object->style.size.gwidth;
         dest.h = object->style.size.gheight;
 
@@ -113,8 +113,8 @@ void object_draw(app_t *app, object_t *object) {
     }
     else {
         SDL_Rect dest;
-        dest.x = object->style.global_position.x;
-        dest.y = object->style.global_position.y;
+        dest.x = object->style.position.gx;
+        dest.y = object->style.position.gy;
         dest.w = object->style.size.gwidth;
         dest.h = object->style.size.gheight;
 
@@ -125,8 +125,8 @@ void object_draw(app_t *app, object_t *object) {
     if(object->style.text_content != NULL) {
         SDL_Point position;
         SDL_Point size;
-        position.x = object->style.global_position.x;
-        position.y = object->style.global_position.y;
+        position.x = object->style.position.gx;
+        position.y = object->style.position.gy;
         size.x = object->style.size.gwidth;
         size.y = object->style.size.gheight;
 
@@ -191,20 +191,20 @@ void object_update(app_t *app, object_t *object) {
     object->style.global_z_index = object->parent->style.global_z_index + object->style.z_index;
 
 
-    if(object->style.size.is_percent_width == true) object->style.size.gwidth = (object->parent->style.size.gwidth * object->style.size.width) / 100;
+    if(object->style.size.is_percent_width) object->style.size.gwidth = (object->parent->style.size.gwidth * object->style.size.width) / 100;
     else object->style.size.gwidth = object->style.size.width;
 
-    if(object->style.size.is_percent_height == true) object->style.size.gheight = (object->parent->style.size.gheight * object->style.size.height) / 100;
+    if(object->style.size.is_percent_height) object->style.size.gheight = (object->parent->style.size.gheight * object->style.size.height) / 100;
     else object->style.size.gheight = object->style.size.height;
 
 
-    if(object->style.percentage_position.x >= 0) position.x = object->parent->style.global_position.x + (object->parent->style.size.gwidth * object->style.percentage_position.x) / 100;
+    if(object->style.position.is_percent_x) position.x = object->parent->style.position.gx + (object->parent->style.size.gwidth * object->style.position.x) / 100;
     else 
-    position.x = object->parent->style.global_position.x + object->style.position.x;
+    position.x = object->parent->style.position.gx + object->style.position.x;
 
-    if(object->style.percentage_position.y >= 0) position.y = object->parent->style.global_position.y + (object->parent->style.size.gheight * object->style.percentage_position.y) / 100;
+    if(object->style.position.is_percent_y) position.y = object->parent->style.position.gy + (object->parent->style.size.gheight * object->style.position.y) / 100;
     else 
-    position.y = object->parent->style.global_position.y + object->style.position.y;
+    position.y = object->parent->style.position.gy + object->style.position.y;
 
     size.x = object->style.size.gwidth;
     size.y = object->style.size.gheight;
@@ -253,7 +253,8 @@ void object_update(app_t *app, object_t *object) {
             break;
     }
 
-    object->style.global_position = position;
+    object->style.position.gx = position.x;
+    object->style.position.gy = position.y;
 
     if(object->on_update != NULL) object->on_update(app, object);
 }
