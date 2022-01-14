@@ -17,9 +17,13 @@ typedef struct s_control {
 	bool V;
 } t_control;
 
-typedef struct size_s {
-	int w;
-	int h;
+typedef struct Size_s {
+	int width;
+	int height;
+	int gwidth;
+	int gheight;
+	bool is_percent_width;
+	bool is_percent_height;
 } Size_t;
 
 typedef struct pos_s {
@@ -32,11 +36,7 @@ typedef struct style_s {
 	SDL_Point global_position;
 	Pos_t percentage_position;
 	anchor_t anchor;
-	SDL_Point size;
-	Size_t percentage_size;
-	SDL_Point global_size;
-	SDL_Point maxsize;
-	SDL_Point minsize;
+	Size_t size;
 	SDL_Color background_color;
 	SDL_Color font_color;
 	SDL_Texture *texture;
@@ -44,6 +44,8 @@ typedef struct style_s {
 	int font_family;
 	int z_index;
 	int global_z_index;
+	char *text_content;
+	anchor_t text_anchor;
 } style_t;
 
 typedef struct object_s {

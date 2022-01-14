@@ -20,16 +20,12 @@ style_t set_clear_style(void) {
     style.font_color = set_color(0, 0, 0, 0);
     style.font_family = 0;
     style.font_size = 0;
-    style.maxsize.x = 0;
-    style.maxsize.y = 0;
-    style.minsize.x = 0;
-    style.minsize.y = 0;
-    style.size.x = 0;
-    style.size.y = 0;
-    style.percentage_size.w = -1;
-    style.percentage_size.h = -1;
-    style.global_size.x = 0;
-    style.global_size.y = 0;
+    style.size.width = 0;
+    style.size.height = 0;
+    style.size.gwidth = 0;
+    style.size.gheight = 0;
+    style.size.is_percent_width = false;
+    style.size.is_percent_height= false;
     style.position.x = 0;
     style.position.y = 0;
     style.global_position.x = 0;
@@ -39,6 +35,8 @@ style_t set_clear_style(void) {
     style.texture = NULL;
     style.z_index = 0;
     style.global_z_index = 0;
+    style.text_content = NULL;
+    style.text_anchor = ANCHOR_TOP_LEFT;
 
     return style;
 }
