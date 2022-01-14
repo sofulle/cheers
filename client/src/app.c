@@ -64,6 +64,8 @@ app_t *app_init(void) {
 		printf("MIX: %s\n", SDL_GetError());
 		exit(1);
 	}
+	
+	app->root = object_add_root();
 
 	return app;
 }

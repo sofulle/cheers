@@ -41,7 +41,6 @@ void scene_init(app_t *app) {
     img_style.anchor = ANCHOR_TOP_LEFT;
     img_style.z_index = 1;
 
-    app->root = object_add_root();
     object_add("main", app->root, &root_style, NULL, NULL, NULL, NULL);
     object_add("not_main", app->root, &main_style, NULL, NULL, NULL, NULL);
     object_add("in", object_search_byid("main", app->root), &in_style, NULL, NULL, NULL, NULL);
