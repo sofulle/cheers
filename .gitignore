@@ -1,0 +1,9 @@
+# .gitignore
+
+.DS_Store
+*.out
+*.o
+obj
+
+ush
+libmx.a
