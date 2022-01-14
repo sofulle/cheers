@@ -4,6 +4,3 @@
 *.out
 *.o
 obj
-
-ush
-libmx.a
