@@ -111,7 +111,7 @@ void object_draw(app_t *app, object_t *object) {
 
         SDL_RenderCopy(app->renderer, object->style.texture, NULL, &dest);
     }
-    else {
+    else if(object->style.background_color.a > 0) {
         SDL_Rect dest;
         dest.x = object->style.position.gx;
         dest.y = object->style.position.gy;
@@ -127,53 +127,74 @@ void object_draw(app_t *app, object_t *object) {
         SDL_Point size;
         position.x = object->style.position.gx;
         position.y = object->style.position.gy;
-        size.x = object->style.size.gwidth;
-        size.y = object->style.size.gheight;
+        size.x = object->style.size.gwidth - object->style.padding.left - object->style.padding.right;
+        size.y = object->style.size.gheight - object->style.padding.top - object->style.padding.bottom;
 
-        switch (object->style.text_anchor) {
-            case ANCHOR_TOP_LEFT:
-                break;
+    switch (object->style.text_anchor) {
+        case ANCHOR_TOP_LEFT:
+            position.x += object->style.padding.left;
+            position.y += object->style.padding.top;
+            break;
 
-            case ANCHOR_TOP_CENTER:
-                position.x += (size.x / 2);
-                break;
+        case ANCHOR_TOP_CENTER:
+            position.x += (size.x / 2);
+            position.y += object->style.padding.top;
+            break;
 
-            case ANCHOR_TOP_RIGHT:
-                position.x += size.x;
-                break;
+        case ANCHOR_TOP_RIGHT:
+            position.x += size.x;
+            position.x -= object->style.padding.right;
+            position.y += object->style.padding.top;
+            break;
 
-            case ANCHOR_CENTER_LEFT:
-                position.y += (size.y / 2);
-                break;
+        case ANCHOR_CENTER_LEFT:
+            position.y += (size.y / 2);
+            position.x += object->style.padding.left;
+            break;
 
-            case ANCHOR_CENTER_CENTER:
-                position.x += (size.x / 2);
-                position.y += (size.y / 2);
-                break;
+        case ANCHOR_CENTER_CENTER:
+            position.x += (size.x / 2);
+            position.y += (size.y / 2);
+            break;
 
-            case ANCHOR_CENTER_RIGHT:
-                position.x += size.x;
-                position.y += (size.y / 2);
-                break;
+        case ANCHOR_CENTER_RIGHT:
+            position.x += size.x;
+            position.y += (size.y / 2);
+            position.x -= object->style.padding.right;
+            break;
 
-            case ANCHOR_BOTTOM_LEFT:
-                position.y += size.y;
-                break;
+        case ANCHOR_BOTTOM_LEFT:
+            position.y += size.y;
+            position.x += object->style.padding.left;
+            position.y -= object->style.padding.bottom;
+            break;
 
-            case ANCHOR_BOTTOM_CENTER:
-                position.x += (size.x / 2);
-                position.y += size.y;
-                break;
+        case ANCHOR_BOTTOM_CENTER:
+            position.x += (size.x / 2);
+            position.y += size.y;
+            position.y -= object->style.padding.bottom;
+            break;
 
-            case ANCHOR_BOTTOM_RIGHT:
-                position.x += size.x;
-                position.y += size.y;
-                break;
+        case ANCHOR_BOTTOM_RIGHT:
+            position.x += size.x;
+            position.y += size.y;
+            position.x -= object->style.padding.right;
+            position.y -= object->style.padding.bottom;
+            break;
 
-            default:
-                break;
-        }
-        draw_text(app, object->style.text_content, position.x, position.y, object->style.font_size, object->style.text_anchor);
+        default:
+            break;
+    }
+
+        SDL_Rect dest;
+        dest.x = position.x;
+        dest.y = position.y;
+        dest.w = size.x;
+        dest.h = size.y;
+        
+        draw_text(app, object->style.text_content, object->style.font.font_id, &dest, object->style.font.color, object->style.text_anchor);
+    
+        if(dest.h > size.y) object->style.size.gheight = dest.h + object->style.padding.top + object->style.padding.bottom;
     }
 }
 
@@ -191,11 +212,14 @@ void object_update(app_t *app, object_t *object) {
     object->style.global_z_index = object->parent->style.global_z_index + object->style.z_index;
 
 
-    if(object->style.size.is_percent_width) object->style.size.gwidth = (object->parent->style.size.gwidth * object->style.size.width) / 100;
+    if(object->style.size.is_percent_width) object->style.size.gwidth = ((object->parent->style.size.gwidth - object->parent->style.padding.left - object->parent->style.padding.right) * object->style.size.width) / 100;
     else object->style.size.gwidth = object->style.size.width;
 
-    if(object->style.size.is_percent_height) object->style.size.gheight = (object->parent->style.size.gheight * object->style.size.height) / 100;
+    if(object->style.size.is_percent_height) object->style.size.gheight = ((object->parent->style.size.gheight - object->parent->style.padding.top - object->parent->style.padding.bottom) * object->style.size.height) / 100;
     else object->style.size.gheight = object->style.size.height;
+
+    //object->style.size.gwidth += (object->style.padding.left + object->style.padding.right);
+    //object->style.size.gheight += (object->style.padding.top + object->style.padding.bottom);
 
 
     if(object->style.position.is_percent_x) position.x = object->parent->style.position.gx + (object->parent->style.size.gwidth * object->style.position.x) / 100;
@@ -211,18 +235,24 @@ void object_update(app_t *app, object_t *object) {
 
     switch (object->style.anchor) {
         case ANCHOR_TOP_LEFT:
+            position.x += object->parent->style.padding.left;
+            position.y += object->parent->style.padding.top;
             break;
 
         case ANCHOR_TOP_CENTER:
             position.x -= (size.x / 2);
+            position.y += object->parent->style.padding.top;
             break;
 
         case ANCHOR_TOP_RIGHT:
             position.x -= size.x;
+            position.x -= object->parent->style.padding.right;
+            position.y += object->parent->style.padding.top;
             break;
 
         case ANCHOR_CENTER_LEFT:
             position.y -= (size.y / 2);
+            position.x += object->parent->style.padding.left;
             break;
 
         case ANCHOR_CENTER_CENTER:
@@ -233,20 +263,26 @@ void object_update(app_t *app, object_t *object) {
         case ANCHOR_CENTER_RIGHT:
             position.x -= size.x;
             position.y -= (size.y / 2);
+            position.x -= object->parent->style.padding.right;
             break;
 
         case ANCHOR_BOTTOM_LEFT:
             position.y -= size.y;
+            position.x += object->parent->style.padding.left;
+            position.y -= object->parent->style.padding.bottom;
             break;
 
         case ANCHOR_BOTTOM_CENTER:
             position.x -= (size.x / 2);
             position.y -= size.y;
+            position.y -= object->parent->style.padding.bottom;
             break;
 
         case ANCHOR_BOTTOM_RIGHT:
             position.x -= size.x;
             position.y -= size.y;
+            position.x -= object->parent->style.padding.right;
+            position.y -= object->parent->style.padding.bottom;
             break;
 
         default:

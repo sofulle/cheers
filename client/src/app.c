@@ -5,7 +5,8 @@
 app_t *app_init(void) {
 	app_t *app = NULL;
 	int image_flags = IMG_INIT_JPG | IMG_INIT_PNG;
-	int window_flags = SDL_WINDOW_RESIZABLE;
+	//int window_flags = SDL_WINDOW_RESIZABLE;
+	int window_flags = 0;
 	int renderer_flags = SDL_RENDERER_ACCELERATED;
 	int mixer_flags = MIX_INIT_MP3 | MIX_INIT_OGG;
 
@@ -21,7 +22,7 @@ app_t *app_init(void) {
 	}
 
 	// Set SDL hints
-	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
+	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best");
 
 	// IMG init
 	if ((IMG_Init(image_flags) & image_flags) != image_flags) {
@@ -57,6 +58,15 @@ app_t *app_init(void) {
 		printf("TTF: %s\n", SDL_GetError());
 		exit(1);
 	}
+
+	// Load fonts
+	app->fonts[FONT_ROBOTO_REGULAR_12] = TTF_OpenFont("resource/fonts/Roboto/Roboto-Regular.ttf", 12);
+	app->fonts[FONT_ROBOTO_REGULAR_14] = TTF_OpenFont("resource/fonts/Roboto/Roboto-Regular.ttf", 14);
+	app->fonts[FONT_ROBOTO_REGULAR_16] = TTF_OpenFont("resource/fonts/Roboto/Roboto-Regular.ttf", 16);
+	app->fonts[FONT_ROBOTO_REGULAR_18] = TTF_OpenFont("resource/fonts/Roboto/Roboto-Regular.ttf", 18);
+	app->fonts[FONT_ROBOTO_REGULAR_36] = TTF_OpenFont("resource/fonts/Roboto/Roboto-Regular.ttf", 36);
+	app->fonts[FONT_ROBOTO_MEDIUM_14] = TTF_OpenFont("resource/fonts/Roboto/Roboto-Medium.ttf", 14);
+	app->fonts[FONT_ROBOTO_MEDIUM_16] = TTF_OpenFont("resource/fonts/Roboto/Roboto-Medium.ttf", 16);
 
 	// MIX init
 	if ((Mix_Init(mixer_flags) & mixer_flags) != mixer_flags) {

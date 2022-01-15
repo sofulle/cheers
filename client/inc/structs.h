@@ -26,7 +26,7 @@ typedef struct Size_s {
 	bool is_percent_height;
 } Size_t;
 
-typedef struct pos_s {
+typedef struct Pos_s {
 	int y;
 	int x;
 	int gx;
@@ -35,15 +35,26 @@ typedef struct pos_s {
 	bool is_percent_y;
 } Pos_t;
 
+typedef struct offset_s {
+	int top;
+	int bottom;
+	int left;
+	int right;
+} offset_t;
+
+typedef struct font_style_s {
+	font_t font_id;
+	SDL_Color color;
+} font_style_t;
+
 typedef struct style_s {
 	Pos_t position;
+	offset_t padding;
 	anchor_t anchor;
 	Size_t size;
+	font_style_t font;
 	SDL_Color background_color;
-	SDL_Color font_color;
 	SDL_Texture *texture;
-	int font_size;
-	int font_family;
 	int z_index;
 	int global_z_index;
 	char *text_content;
@@ -67,6 +78,9 @@ typedef struct app_s {
 	SDL_Window *window;
 	t_control control;
 	object_t *root;
+	TTF_Font *fonts[FONT_COUNT];
+	SDL_Rect glyphs[FONT_COUNT][GLYPHS_COUNT];
+	SDL_Texture *font_textures[FONT_COUNT];
 } app_t;
 
 

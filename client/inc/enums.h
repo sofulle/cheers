@@ -15,5 +15,21 @@ typedef enum anchor_e {
 	ANCHOR_BOTTOM_RIGHT
 } anchor_t;
 
+typedef enum font_e {
+	FONT_ROBOTO_REGULAR_12,
+	FONT_ROBOTO_REGULAR_14,
+	FONT_ROBOTO_REGULAR_16,
+	FONT_ROBOTO_REGULAR_18,
+	FONT_ROBOTO_REGULAR_36,
+	FONT_ROBOTO_MEDIUM_14,
+	FONT_ROBOTO_MEDIUM_16,
+	FONT_COUNT
+} font_t;
+
+typedef enum text_align_e {
+	TEXT_ALIGN_LEFT,
+	TEXT_ALIGN_CENTER,
+	TEXT_ALIGN_RIGHT
+} text_align_t;
 
 #endif // !CHEERS_ENUMS_H
