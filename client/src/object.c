@@ -235,24 +235,18 @@ void object_update(app_t *app, object_t *object) {
 
     switch (object->style.anchor) {
         case ANCHOR_TOP_LEFT:
-            position.x += object->parent->style.padding.left;
-            position.y += object->parent->style.padding.top;
             break;
 
         case ANCHOR_TOP_CENTER:
             position.x -= (size.x / 2);
-            position.y += object->parent->style.padding.top;
             break;
 
         case ANCHOR_TOP_RIGHT:
             position.x -= size.x;
-            position.x -= object->parent->style.padding.right;
-            position.y += object->parent->style.padding.top;
             break;
 
         case ANCHOR_CENTER_LEFT:
             position.y -= (size.y / 2);
-            position.x += object->parent->style.padding.left;
             break;
 
         case ANCHOR_CENTER_CENTER:
@@ -263,30 +257,70 @@ void object_update(app_t *app, object_t *object) {
         case ANCHOR_CENTER_RIGHT:
             position.x -= size.x;
             position.y -= (size.y / 2);
-            position.x -= object->parent->style.padding.right;
             break;
 
         case ANCHOR_BOTTOM_LEFT:
             position.y -= size.y;
-            position.x += object->parent->style.padding.left;
-            position.y -= object->parent->style.padding.bottom;
             break;
 
         case ANCHOR_BOTTOM_CENTER:
             position.x -= (size.x / 2);
             position.y -= size.y;
-            position.y -= object->parent->style.padding.bottom;
             break;
 
         case ANCHOR_BOTTOM_RIGHT:
             position.x -= size.x;
             position.y -= size.y;
-            position.x -= object->parent->style.padding.right;
-            position.y -= object->parent->style.padding.bottom;
             break;
 
         default:
             break;
+    }
+
+    if(!object->style.is_static) {
+        switch (object->style.anchor) {
+            case ANCHOR_TOP_LEFT:
+                position.x += object->parent->style.padding.left;
+                position.y += object->parent->style.padding.top;
+                break;
+
+            case ANCHOR_TOP_CENTER:
+                position.y += object->parent->style.padding.top;
+                break;
+
+            case ANCHOR_TOP_RIGHT:
+                position.x -= object->parent->style.padding.right;
+                position.y += object->parent->style.padding.top;
+                break;
+
+            case ANCHOR_CENTER_LEFT:
+                position.x += object->parent->style.padding.left;
+                break;
+
+            case ANCHOR_CENTER_CENTER:
+                break;
+
+            case ANCHOR_CENTER_RIGHT:
+                position.x -= object->parent->style.padding.right;
+                break;
+
+            case ANCHOR_BOTTOM_LEFT:
+                position.x += object->parent->style.padding.left;
+                position.y -= object->parent->style.padding.bottom;
+                break;
+
+            case ANCHOR_BOTTOM_CENTER:
+                position.y -= object->parent->style.padding.bottom;
+                break;
+
+            case ANCHOR_BOTTOM_RIGHT:
+                position.x -= object->parent->style.padding.right;
+                position.y -= object->parent->style.padding.bottom;
+                break;
+
+            default:
+                break;
+        }
     }
 
     object->style.position.gx = position.x;

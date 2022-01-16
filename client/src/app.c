@@ -5,8 +5,7 @@
 app_t *app_init(void) {
 	app_t *app = NULL;
 	int image_flags = IMG_INIT_JPG | IMG_INIT_PNG;
-	//int window_flags = SDL_WINDOW_RESIZABLE;
-	int window_flags = 0;
+	int window_flags = SDL_WINDOW_RESIZABLE;
 	int renderer_flags = SDL_RENDERER_ACCELERATED;
 	int mixer_flags = MIX_INIT_MP3 | MIX_INIT_OGG;
 

@@ -4,8 +4,8 @@
 
 
 #define APP_TITLE "Cheers! | Cop & Past Inc."
-#define START_SCREEN_WIDTH 420
-#define START_SCREEN_HEIGHT 630
+#define START_SCREEN_WIDTH 1280
+#define START_SCREEN_HEIGHT 720
 
 #define SOUND_MAX_CHANNELS 8
 

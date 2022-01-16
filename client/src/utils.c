@@ -68,6 +68,7 @@ style_t set_clear_style(void) {
     style.text_content = NULL;
     style.text_anchor = ANCHOR_TOP_LEFT;
     style.padding = set_pad(0, 0, 0, 0);
+    style.is_static = false;
 
     return style;
 }

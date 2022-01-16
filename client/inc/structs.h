@@ -59,6 +59,7 @@ typedef struct style_s {
 	int global_z_index;
 	char *text_content;
 	anchor_t text_anchor;
+	bool is_static;
 } style_t;
 
 typedef struct object_s {
