@@ -1,7 +1,7 @@
 # Makefile
 
 # Executable file name
-EXEC_FILE = cheers
+EXEC_FILE = client
 
 # SDL2 Library
 LIB_SDL = -F resource/framework \
@@ -125,3 +125,4 @@ reinstall: uninstall all
 
 
 .PHONY: all lib link archive index build uninstall clean fullclean fulluninstall reinstall
+

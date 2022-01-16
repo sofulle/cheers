@@ -2,28 +2,17 @@
 
 #include "cheers.h"
 
-// int argc, char *argv[]
+int main(int argc, char *argv[]) {
+	if (argc != 3) {
+        printf("\n Usage: %s <ip of server> <port>\n", argv[0]);
+        return 1;
+    }
 
-int main() {
 	app_t *app = app_init();
 
 	event_init(app);
 	scene_init(app);
-
-	while (true) {
-		scene_prepare(app);
-
-		scene_update(app);
-
-		scene_draw(app);
-
-		scene_present(app);
-
-		event_handle(app);
-
-		SDL_Delay(16);
-	}
-
+	communication_with_server(app, argv);
 	app_quit(app);
 
 	return 0;

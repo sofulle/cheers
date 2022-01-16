@@ -15,11 +15,22 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_mixer.h>
-#include <stdbool.h>
-#include <stdlib.h>
-#include <stddef.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <sqlite3.h>
 #include <unistd.h>
+#include <sys/stat.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <string.h>
+#include <errno.h>
+#include <arpa/inet.h>
+#include <stdbool.h>
+#include <time.h>
+#include <sys/signal.h>
+#include <strings.h>
 
 // Include local headers
 #include "vector.h"

@@ -1,55 +1,41 @@
-# Makefile
+NAME = uchat
 
-EXEC_DIR = project
-EXEC_FILE = ush
+SERVER_NAME = uchat_server
+SERVER_DIR = server
 
-TESTS_DIR = tests
+CLIENT_DIR = client
 
-CHECK_DIR = project
+LIBMX_DIR = frameworks/libmx
+LIBSQLITE_DIR = frameworks/sqlite3
 
+MAKE_M = make -sf Makefile -C
+MKDIR_M = mkdir -p
+RM = /bin/rm -rf
 
-BLACK	= \033[30;1m
-GREEN 	= \033[32;1m
-RED 	= \033[31;1m
-YELLOW 	= \033[33;1m
-BLUE	= \033[34;1m
-VIOLET	= \033[35;1m
-CYAN	= \033[36;1m
-GRAY	= \033[37;1m
+all:
+	@$(MAKE_M) $(CLIENT_DIR) $@
+	@$(MAKE_M) $(SERVER_DIR) $@
 
-BOLD	= \033[1m
-OPACITY	= \033[2m
-UNDER	= \033[4m
+$(NAME):
+	@$(MAKE_M) $(CLIENT_DIR)
 
-UNSET 	= \033[0m
+$(SERVER_NAME):
+	@$(MAKE_M) $(SERVER_DIR)
 
-PRMPT = [$(UNDER)$(VIOLET)main$(UNSET)]
+font:
+	@cp client/data/fonts/Rubik/* ${HOME}/Library/Fonts/
+	@cp client/data/fonts/UniSans/* ${HOME}/Library/Fonts/
 
+clean:
+	@$(MAKE_M) $(CLIENT_DIR) $@
+	@$(MAKE_M) $(SERVER_DIR) $@
 
-all: $(EXEC_FILE)
+uninstall:
+	@$(MAKE_M) $(CLIENT_DIR) $@
+	@$(MAKE_M) $(SERVER_DIR) $@
+	@$(MAKE_M) $(LIBMX_DIR) $@
+	@$(MAKE_M) $(LIBSQLITE_DIR) $@
 
+reinstall: uninstall all
 
-$(EXEC_FILE):
-	@printf "$(PRMPT) Starting makefile for $(UNDER)$(EXEC_FILE)$(UNSET)...\n"
-	@make -s -C $(EXEC_DIR)
-
-
-tests:
-	@printf "$(PRMPT) Starting tests for $(UNDER)$(EXEC_FILE)$(UNSET)...\n"
-	@./tests.sh $(EXEC_FILE) $(EXEC_DIR) $(TESTS_DIR)
-
-
-uniqueness:
-# @printf "$(PRMPT) Starting makefile for $(UNDER)$(CHECK_DIR)/$(EXEC_FILE)$(UNSET)...\n"
-# @make -s -C $(CHECK_DIR)
-	@printf "$(PRMPT) Starting uniqueness check for $(UNDER)$(EXEC_FILE)$(UNSET)...\n"
-	@./check.sh $(EXEC_FILE) $(EXEC_DIR) $(CHECK_DIR)
-
-
-copy:
-	@printf "${PRMPT} Copying executable file to /usr/bin\t"
-	@sudo cp $(EXEC_DIR)/$(EXEC_FILE) /usr/bin
-	@printf "${GREEN}copied${UNSET}\n"
-
-
-.PHONY: all tests uniqueness copy
+.PHONY: all clean uninstall reinstall $(NAME) $(SERVER_NAME)

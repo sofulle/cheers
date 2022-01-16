@@ -4,7 +4,6 @@
 
 #include "cheers.h"
 
-
 // app
 app_t *app_init();
 void app_quit(app_t *app);
@@ -13,7 +12,7 @@ void app_quit(app_t *app);
 void scene_init(app_t *app);
 void scene_prepare(app_t *app);
 void scene_update(app_t* app);
-void scene_draw(app_t *app);
+void scene_draw(app_t *app, char*text);
 void scene_present(app_t *app);
 void scene_logic(app_t *app);
 void scene_quit(app_t *app);
@@ -44,5 +43,6 @@ void object_update(app_t *app, object_t *object);
 SDL_Color set_color(int r, int g, int b, int a);
 style_t set_clear_style(void);
 
+void communication_with_server(app_t *app, char **argv);
 
 #endif // !CHEERS_FUNCTIONS_H

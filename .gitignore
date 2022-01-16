@@ -1,6 +1,14 @@
-# .gitignore
 
 .DS_Store
-*.out
 *.o
-obj
+*.out
+
+obj/
+
+libmx.a
+libsqlite3.a
+vector.a
+
+.vscode
+
+*.sqlite

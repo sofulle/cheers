@@ -14,8 +14,8 @@ object_t *object_add_root(void) {
 
     strcat(object->id, "root");
     object->style = set_clear_style();
-    object->style.size.gwidth = START_SCREEN_WIDTH;
-    object->style.size.gheight = START_SCREEN_HEIGHT;
+    object->style.global_size.x = START_SCREEN_WIDTH;
+    object->style.global_size.y = START_SCREEN_HEIGHT;
     object->children = NULL;
     object->parent = NULL;
     object->on_start = NULL;
@@ -100,14 +100,14 @@ void object_draw(app_t *app, object_t *object) {
         return;
     }
 
-    printf("object: %s  w: %d  h: %d  x: %d  y: %d\n", object->id, object->style.size.gwidth, object->style.size.gheight, object->style.position.x, object->style.position.y);
+    //printf("object: %s  x: %d  y: %d  w: %d  h: %d  parent: %s\n", object->id, rect.x, rect.y, rect.w, rect.h, object->parent->id);
 
     if(object->style.texture != NULL) {
         SDL_Rect dest;
         dest.x = object->style.global_position.x;
         dest.y = object->style.global_position.y;
-        dest.w = object->style.size.gwidth;
-        dest.h = object->style.size.gheight;
+        dest.w = object->style.global_size.x;
+        dest.h = object->style.global_size.y;
 
         SDL_RenderCopy(app->renderer, object->style.texture, NULL, &dest);
     }
@@ -115,65 +115,11 @@ void object_draw(app_t *app, object_t *object) {
         SDL_Rect dest;
         dest.x = object->style.global_position.x;
         dest.y = object->style.global_position.y;
-        dest.w = object->style.size.gwidth;
-        dest.h = object->style.size.gheight;
+        dest.w = object->style.global_size.x;
+        dest.h = object->style.global_size.y;
 
         SDL_SetRenderDrawColor(app->renderer, object->style.background_color.r, object->style.background_color.g, object->style.background_color.b, object->style.background_color.a);
         SDL_RenderFillRect(app->renderer, &dest);
-    }
-
-    if(object->style.text_content != NULL) {
-        SDL_Point position;
-        SDL_Point size;
-        position.x = object->style.global_position.x;
-        position.y = object->style.global_position.y;
-        size.x = object->style.size.gwidth;
-        size.y = object->style.size.gheight;
-
-        switch (object->style.text_anchor) {
-            case ANCHOR_TOP_LEFT:
-                break;
-
-            case ANCHOR_TOP_CENTER:
-                position.x += (size.x / 2);
-                break;
-
-            case ANCHOR_TOP_RIGHT:
-                position.x += size.x;
-                break;
-
-            case ANCHOR_CENTER_LEFT:
-                position.y += (size.y / 2);
-                break;
-
-            case ANCHOR_CENTER_CENTER:
-                position.x += (size.x / 2);
-                position.y += (size.y / 2);
-                break;
-
-            case ANCHOR_CENTER_RIGHT:
-                position.x += size.x;
-                position.y += (size.y / 2);
-                break;
-
-            case ANCHOR_BOTTOM_LEFT:
-                position.y += size.y;
-                break;
-
-            case ANCHOR_BOTTOM_CENTER:
-                position.x += (size.x / 2);
-                position.y += size.y;
-                break;
-
-            case ANCHOR_BOTTOM_RIGHT:
-                position.x += size.x;
-                position.y += size.y;
-                break;
-
-            default:
-                break;
-        }
-        draw_text(app, object->style.text_content, position.x, position.y, object->style.font_size, object->style.text_anchor);
     }
 }
 
@@ -184,30 +130,28 @@ void object_update(app_t *app, object_t *object) {
     if(object == NULL) return;
 
     if(object->parent == NULL) {
-        SDL_GetWindowSize(app->window, &object->style.size.gwidth, &object->style.size.gheight);
+        SDL_GetWindowSize(app->window, &object->style.global_size.x, &object->style.global_size.y);
         return;
     }
 
     object->style.global_z_index = object->parent->style.global_z_index + object->style.z_index;
 
+    if(object->style.percentage_size.w >= 0) object->style.global_size.x = (object->parent->style.global_size.x * object->style.percentage_size.w) / 100;
+    else object->style.global_size.x = object->style.size.x;
 
-    if(object->style.size.is_percent_width == true) object->style.size.gwidth = (object->parent->style.size.gwidth * object->style.size.width) / 100;
-    else object->style.size.gwidth = object->style.size.width;
-
-    if(object->style.size.is_percent_height == true) object->style.size.gheight = (object->parent->style.size.gheight * object->style.size.height) / 100;
-    else object->style.size.gheight = object->style.size.height;
+    if(object->style.percentage_size.h >= 0) object->style.global_size.y = (object->parent->style.global_size.y * object->style.percentage_size.h) / 100;
+    else object->style.global_size.y = object->style.size.y;
 
 
-    if(object->style.percentage_position.x >= 0) position.x = object->parent->style.global_position.x + (object->parent->style.size.gwidth * object->style.percentage_position.x) / 100;
+    if(object->style.percentage_position.x >= 0) position.x = object->parent->style.global_position.x + (object->parent->style.global_size.x * object->style.percentage_position.x) / 100;
     else 
     position.x = object->parent->style.global_position.x + object->style.position.x;
 
-    if(object->style.percentage_position.y >= 0) position.y = object->parent->style.global_position.y + (object->parent->style.size.gheight * object->style.percentage_position.y) / 100;
+    if(object->style.percentage_position.y >= 0) position.y = object->parent->style.global_position.y + (object->parent->style.global_size.y * object->style.percentage_position.y) / 100;
     else 
     position.y = object->parent->style.global_position.y + object->style.position.y;
 
-    size.x = object->style.size.gwidth;
-    size.y = object->style.size.gheight;
+    size = object->style.global_size;
 
     switch (object->style.anchor) {
         case ANCHOR_TOP_LEFT:
