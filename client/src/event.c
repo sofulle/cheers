@@ -2,10 +2,6 @@
 
 #include "cheers.h"
 
-void event_init(app_t *app) {
-
-}
-
 void event_handle(app_t *app) {
 	SDL_Event event;
 
@@ -16,46 +12,32 @@ void event_handle(app_t *app) {
 				break;
 
 			case SDL_KEYDOWN:
-				event_keydown(app, &event.key);
+				//event_keydown(app, &event.key);
 				break;
-
 			case SDL_KEYUP:
-				event_keyup(app, &event.key);
+				//event_keyup(app, &event.key);
 				break;
 
 			case SDL_WINDOWEVENT:
-				event_window(app, &event.window);
+				//event_window(app, &event.window);
+				break;
+
+			case SDL_TEXTINPUT:
+				strcat(app->text, event.text.text);
+				break;
+
+			case SDL_MOUSEBUTTONDOWN:
+				object_hierarchy_event_exec(app, app->root, &event, object_onclick);
+				break;
+			case SDL_MOUSEBUTTONUP:
+				object_hierarchy_event_exec(app, app->root, &event, object_onclick);
+				break;
+			case SDL_MOUSEMOTION:
+				object_hierarchy_event_exec(app, app->root, &event, object_onhover);
 				break;
 
 			default:
 				break;
 		}
-	}
-}
-
-void event_keydown(app_t *app, SDL_KeyboardEvent *event) {
-	if (event->repeat == 0) {
-		if (((event->keysym.scancode == SDL_SCANCODE_UP) || (event->keysym.scancode == SDL_SCANCODE_W)) && !app->control.is_locked) {
-			app->control.up = 1;
-		}
-	}
-}
-
-void event_keyup(app_t *app, SDL_KeyboardEvent *event) {
-	if (event->repeat == 0) {
-		if ((event->keysym.scancode == SDL_SCANCODE_UP) || (event->keysym.scancode == SDL_SCANCODE_W)) {
-			app->control.up = 0;
-		}
-	}
-}
-
-void event_window(app_t *app, SDL_WindowEvent *event) {
-	switch (event->event)
-	{
-	case SDL_WINDOWEVENT_RESIZED:
-		break;
-	
-	default:
-		break;
 	}
 }

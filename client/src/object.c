@@ -21,12 +21,13 @@ object_t *object_add_root(void) {
     object->on_start = NULL;
     object->on_update = NULL;
     object->on_click = NULL;
-    object->on_hover = NULL;
+    object->on_hover_start = NULL;
+    object->on_hover_end = NULL;
 
     return object;
 }
 
-object_t *object_add(char id[256], object_t *parent, style_t *style, void (*on_start)(app_t *, object_t *), void (*on_update)(app_t *, object_t *), void (*on_click)(app_t *, object_t *), void (*on_hover)(app_t *, object_t *)) {
+object_t *object_add(char id[256], object_t *parent, style_t *style) {
     object_t *object = NULL;
 
     if(parent == NULL) {
@@ -53,10 +54,11 @@ object_t *object_add(char id[256], object_t *parent, style_t *style, void (*on_s
     }
     object->children = NULL;
     object->parent = parent;
-    object->on_start = on_start;
-    object->on_update = on_update;
-    object->on_click = on_click;
-    object->on_hover = on_hover;
+    object->on_start = NULL;
+    object->on_update = NULL;
+    object->on_click = NULL;
+    object->on_hover_start = NULL;
+    object->on_hover_end = NULL;
 
     vector_push_back(&parent->children, object);
 
@@ -68,6 +70,14 @@ void object_hierarchy_exec(app_t *app, object_t *parent, void (*func)(app_t*, ob
     for (vector_t *node = parent->children; node != NULL; node = node->next) {
         object_t *obj = (object_t *)node->data;
         object_hierarchy_exec(app, obj, func);
+    }
+}
+
+void object_hierarchy_event_exec(app_t *app, object_t *parent, SDL_Event *event, void (*event_func)(app_t*, object_t*, SDL_Event *event)) {
+    event_func(app, parent, event);
+    for (vector_t *node = parent->children; node != NULL; node = node->next) {
+        object_t *obj = (object_t *)node->data;
+        object_hierarchy_event_exec(app, obj, event, event_func);
     }
 }
 
@@ -89,6 +99,107 @@ object_t *object_search_byid(char id[256], object_t *parent) {
     }
 
     return NULL;
+}
+
+void object_start(app_t *app, object_t *object) {
+    if(object->on_start != NULL) object->on_start(app, object);
+}
+
+void object_update(app_t *app, object_t *object) {
+    SDL_Point position;
+    SDL_Point size;
+
+    if(object == NULL) return;
+
+    if(object->parent == NULL) {
+        SDL_GetWindowSize(app->window, &object->style.size.gwidth, &object->style.size.gheight);
+        return;
+    }
+
+    object->style.global_z_index = object->parent->style.global_z_index + object->style.z_index;
+
+
+    if(object->style.size.is_percent_width) object->style.size.gwidth = ((object->parent->style.size.gwidth - object->parent->style.padding.left - object->parent->style.padding.right) * object->style.size.width) / 100;
+    else object->style.size.gwidth = object->style.size.width;
+
+    if(object->style.size.is_percent_height) object->style.size.gheight = ((object->parent->style.size.gheight - object->parent->style.padding.top - object->parent->style.padding.bottom) * object->style.size.height) / 100;
+    else object->style.size.gheight = object->style.size.height;
+
+    //object->style.size.gwidth += (object->style.padding.left + object->style.padding.right);
+    //object->style.size.gheight += (object->style.padding.top + object->style.padding.bottom);
+
+
+    if(object->style.position.is_percent_x) position.x = object->parent->style.position.gx + (object->parent->style.size.gwidth * object->style.position.x) / 100;
+    else 
+    position.x = object->parent->style.position.gx + object->style.position.x;
+
+    if(object->style.position.is_percent_y) position.y = object->parent->style.position.gy + (object->parent->style.size.gheight * object->style.position.y) / 100;
+    else 
+    position.y = object->parent->style.position.gy + object->style.position.y;
+
+    size.x = object->style.size.gwidth;
+    size.y = object->style.size.gheight;
+
+    switch (object->style.anchor) {
+        case ANCHOR_TOP_LEFT:
+            position.x += object->parent->style.padding.left;
+            position.y += object->parent->style.padding.top;
+            break;
+
+        case ANCHOR_TOP_CENTER:
+            position.x -= (size.x / 2);
+            position.y += object->parent->style.padding.top;
+            break;
+
+        case ANCHOR_TOP_RIGHT:
+            position.x -= size.x;
+            position.x -= object->parent->style.padding.right;
+            position.y += object->parent->style.padding.top;
+            break;
+
+        case ANCHOR_CENTER_LEFT:
+            position.y -= (size.y / 2);
+            position.x += object->parent->style.padding.left;
+            break;
+
+        case ANCHOR_CENTER_CENTER:
+            position.x -= (size.x / 2);
+            position.y -= (size.y / 2);
+            break;
+
+        case ANCHOR_CENTER_RIGHT:
+            position.x -= size.x;
+            position.y -= (size.y / 2);
+            position.x -= object->parent->style.padding.right;
+            break;
+
+        case ANCHOR_BOTTOM_LEFT:
+            position.y -= size.y;
+            position.x += object->parent->style.padding.left;
+            position.y -= object->parent->style.padding.bottom;
+            break;
+
+        case ANCHOR_BOTTOM_CENTER:
+            position.x -= (size.x / 2);
+            position.y -= size.y;
+            position.y -= object->parent->style.padding.bottom;
+            break;
+
+        case ANCHOR_BOTTOM_RIGHT:
+            position.x -= size.x;
+            position.y -= size.y;
+            position.x -= object->parent->style.padding.right;
+            position.y -= object->parent->style.padding.bottom;
+            break;
+
+        default:
+            break;
+    }
+
+    object->style.position.gx = position.x;
+    object->style.position.gy = position.y;
+
+    if(object->on_update != NULL) object->on_update(app, object);
 }
 
 void object_draw(app_t *app, object_t *object) {
@@ -198,99 +309,43 @@ void object_draw(app_t *app, object_t *object) {
     }
 }
 
-void object_update(app_t *app, object_t *object) {
-    SDL_Point position;
-    SDL_Point size;
+void object_onclick(app_t *app, object_t *object, SDL_Event *event) {
+    if(object->on_click_start == NULL && object->on_click_end == NULL) return;
 
-    if(object == NULL) return;
+    SDL_MouseButtonEvent e = event->button;
+    int x = e.x, y = e.y;
+    SDL_Rect obj = get_object_rect(object);
 
-    if(object->parent == NULL) {
-        SDL_GetWindowSize(app->window, &object->style.size.gwidth, &object->style.size.gheight);
-        return;
+    if(e.button == SDL_BUTTON_LEFT) {
+        if(x > obj.x && x < obj.x + obj.w && y > obj.y && y < obj.y + obj.h && object->is_clicked == false) {
+            object->is_clicked = true;
+            object->on_click_start(app, object, event);
+        }
+        else if(x > obj.x && x < obj.x + obj.w && y > obj.y && y < obj.y + obj.h && object->is_clicked == true) {
+            object->is_clicked = false;
+            object->on_click_end(app, object, event);
+            object->on_click(app, object, event);
+        }
+        else if(object->is_clicked == true) {
+            object->is_clicked = false;
+            object->on_click_end(app, object, event);
+        }
     }
+}
 
-    object->style.global_z_index = object->parent->style.global_z_index + object->style.z_index;
+void object_onhover(app_t *app, object_t *object, SDL_Event *event) {
+    if(object->on_hover_start == NULL && object->on_hover_end == NULL) return;
 
+    SDL_MouseMotionEvent e = event->motion;
+    int x = e.x, y = e.y;
+    SDL_Rect obj = get_object_rect(object);
 
-    if(object->style.size.is_percent_width) object->style.size.gwidth = ((object->parent->style.size.gwidth - object->parent->style.padding.left - object->parent->style.padding.right) * object->style.size.width) / 100;
-    else object->style.size.gwidth = object->style.size.width;
-
-    if(object->style.size.is_percent_height) object->style.size.gheight = ((object->parent->style.size.gheight - object->parent->style.padding.top - object->parent->style.padding.bottom) * object->style.size.height) / 100;
-    else object->style.size.gheight = object->style.size.height;
-
-    //object->style.size.gwidth += (object->style.padding.left + object->style.padding.right);
-    //object->style.size.gheight += (object->style.padding.top + object->style.padding.bottom);
-
-
-    if(object->style.position.is_percent_x) position.x = object->parent->style.position.gx + (object->parent->style.size.gwidth * object->style.position.x) / 100;
-    else 
-    position.x = object->parent->style.position.gx + object->style.position.x;
-
-    if(object->style.position.is_percent_y) position.y = object->parent->style.position.gy + (object->parent->style.size.gheight * object->style.position.y) / 100;
-    else 
-    position.y = object->parent->style.position.gy + object->style.position.y;
-
-    size.x = object->style.size.gwidth;
-    size.y = object->style.size.gheight;
-
-    switch (object->style.anchor) {
-        case ANCHOR_TOP_LEFT:
-            position.x += object->parent->style.padding.left;
-            position.y += object->parent->style.padding.top;
-            break;
-
-        case ANCHOR_TOP_CENTER:
-            position.x -= (size.x / 2);
-            position.y += object->parent->style.padding.top;
-            break;
-
-        case ANCHOR_TOP_RIGHT:
-            position.x -= size.x;
-            position.x -= object->parent->style.padding.right;
-            position.y += object->parent->style.padding.top;
-            break;
-
-        case ANCHOR_CENTER_LEFT:
-            position.y -= (size.y / 2);
-            position.x += object->parent->style.padding.left;
-            break;
-
-        case ANCHOR_CENTER_CENTER:
-            position.x -= (size.x / 2);
-            position.y -= (size.y / 2);
-            break;
-
-        case ANCHOR_CENTER_RIGHT:
-            position.x -= size.x;
-            position.y -= (size.y / 2);
-            position.x -= object->parent->style.padding.right;
-            break;
-
-        case ANCHOR_BOTTOM_LEFT:
-            position.y -= size.y;
-            position.x += object->parent->style.padding.left;
-            position.y -= object->parent->style.padding.bottom;
-            break;
-
-        case ANCHOR_BOTTOM_CENTER:
-            position.x -= (size.x / 2);
-            position.y -= size.y;
-            position.y -= object->parent->style.padding.bottom;
-            break;
-
-        case ANCHOR_BOTTOM_RIGHT:
-            position.x -= size.x;
-            position.y -= size.y;
-            position.x -= object->parent->style.padding.right;
-            position.y -= object->parent->style.padding.bottom;
-            break;
-
-        default:
-            break;
+    if(x > obj.x && x < obj.x + obj.w && y > obj.y && y < obj.y + obj.h && object->is_hovered == false) {
+        object->is_hovered = true;
+        object->on_hover_start(app, object, event);
     }
-
-    object->style.position.gx = position.x;
-    object->style.position.gy = position.y;
-
-    if(object->on_update != NULL) object->on_update(app, object);
+    if((x < obj.x || x > obj.x + obj.w || y < obj.y || y > obj.y + obj.h) && object->is_hovered == true) {
+        object->is_hovered = false;
+        object->on_hover_end(app, object, event);
+    }
 }

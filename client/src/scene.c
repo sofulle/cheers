@@ -2,6 +2,26 @@
 
 #include "cheers.h"
 
+void button_submit_onhoverstart(app_t *app, object_t *object, SDL_Event *event) {
+    if(!object->is_clicked)
+        object->style.background_color = set_color(62, 53, 101, 255);
+}
+void button_submit_onhoverend(app_t *app, object_t *object, SDL_Event *event) {
+    if(!object->is_clicked)
+        object->style.background_color = set_color(62, 67, 101, 255);
+}
+
+
+void button_submit_onclickstart(app_t *app, object_t *object, SDL_Event *event) {
+    object->style.background_color = set_color(244, 4, 64, 255);
+}
+void button_submit_onclickend(app_t *app, object_t *object, SDL_Event *event) {
+    object->style.background_color = set_color(62, 67, 101, 255);
+}
+void button_submit_onclick(app_t *app, object_t *object, SDL_Event *event) {
+    object->style.text_content = "Never gonna give...";
+}
+
 void scene_init(app_t *app) {
     style_t style_background = set_clear_style();
     style_background.position = set_pos(0, 0, false, false);
@@ -43,7 +63,7 @@ void scene_init(app_t *app) {
     style_input_name.padding.left = 15;
     style_input_name.anchor = ANCHOR_TOP_CENTER;
     style_input_name.background_color = set_color(62, 67, 101, 255);
-    style_input_name.text_content = "Name";
+    style_input_name.text_content = app->text;
     style_input_name.text_anchor = ANCHOR_CENTER_LEFT;
     style_input_name.font = set_font(FONT_ROBOTO_REGULAR_16, set_color(255, 255, 255, 150));
 
@@ -53,7 +73,7 @@ void scene_init(app_t *app) {
     style_input_username.padding.left = 15;
     style_input_username.anchor = ANCHOR_TOP_CENTER;
     style_input_username.background_color = set_color(62, 67, 101, 255);
-    style_input_username.text_content = "Username";
+    style_input_username.text_content = app->composition;
     style_input_username.text_anchor = ANCHOR_CENTER_LEFT;
     style_input_username.font = set_font(FONT_ROBOTO_REGULAR_16, set_color(255, 255, 255, 150));
 
@@ -63,7 +83,7 @@ void scene_init(app_t *app) {
     style_button_submit.padding.left = 15;
     style_button_submit.anchor = ANCHOR_TOP_CENTER;
     style_button_submit.background_color = set_color(62, 67, 101, 255);
-    style_button_submit.text_content = "Log in";
+    style_button_submit.text_content = "Nam";
     style_button_submit.text_anchor = ANCHOR_CENTER_CENTER;
     style_button_submit.font = set_font(FONT_ROBOTO_REGULAR_18, set_color(255, 255, 255, 255));
 
@@ -76,15 +96,26 @@ void scene_init(app_t *app) {
     style_copyright.text_anchor = ANCHOR_CENTER_CENTER;
     style_copyright.font = set_font(FONT_ROBOTO_REGULAR_12, set_color(255, 255, 255, 255));
 
-    object_add("background", app->root, &style_background, NULL, NULL, NULL, NULL);
-    object_add("container", app->root, &style_container, NULL, NULL, NULL, NULL);
-    object_add("logo", object_search_byid("container", app->root), &style_logo, NULL, NULL, NULL, NULL);
-    object_add("title", object_search_byid("container", app->root), &style_title, NULL, NULL, NULL, NULL);
-    object_add("subtitle", object_search_byid("container", app->root), &style_subtitle, NULL, NULL, NULL, NULL);
-    object_add("input_name", object_search_byid("container", app->root), &style_input_name, NULL, NULL, NULL, NULL);
-    object_add("input_username", object_search_byid("container", app->root), &style_input_username, NULL, NULL, NULL, NULL);
-    object_add("button_submit", object_search_byid("container", app->root), &style_button_submit, NULL, NULL, NULL, NULL);
-    object_add("copyright", object_search_byid("container", app->root), &style_copyright, NULL, NULL, NULL, NULL);
+    object_add("background", app->root, &style_background);
+    object_add("container", app->root, &style_container);
+    object_add("logo", object_search_byid("container", app->root), &style_logo);
+    object_add("title", object_search_byid("container", app->root), &style_title);
+    object_add("subtitle", object_search_byid("container", app->root), &style_subtitle);
+    object_add("input_name", object_search_byid("container", app->root), &style_input_name);
+    object_add("input_username", object_search_byid("container", app->root), &style_input_username);
+    object_add("button_submit", object_search_byid("container", app->root), &style_button_submit);
+    object_add("copyright", object_search_byid("container", app->root), &style_copyright);
+
+    object_hierarchy_exec(app, app->root, object_start);
+
+    //SDL_StartTextInput();
+
+    object_search_byid("button_submit", app->root)->on_hover_start = button_submit_onhoverstart;
+    object_search_byid("button_submit", app->root)->on_hover_end = button_submit_onhoverend;
+
+    object_search_byid("button_submit", app->root)->on_click_start = button_submit_onclickstart;
+    object_search_byid("button_submit", app->root)->on_click_end = button_submit_onclickend;
+    object_search_byid("button_submit", app->root)->on_click = button_submit_onclick;
 }
 
 void scene_prepare(app_t* app) {

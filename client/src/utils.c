@@ -76,3 +76,13 @@ int max(int a, int b) {
     if(a > b) return a;
     else return b;
 }
+
+SDL_Rect get_object_rect(object_t *object) {
+    SDL_Rect rect;
+    rect.x = object->style.position.gx;
+    rect.y = object->style.position.gy;
+    rect.w = object->style.size.gwidth;
+    rect.h = object->style.size.gheight;
+
+    return rect;
+}

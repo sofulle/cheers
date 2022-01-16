@@ -64,13 +64,19 @@ typedef struct style_s {
 typedef struct object_s {
 	char id[256];
 	bool is_focused;
+	bool is_active;
 	style_t style;
 	struct object_s *parent;
 	vector_t *children;
+	bool is_hovered;
+	bool is_clicked;
 	void (*on_start)(app_t *app, struct object_s *object);
 	void (*on_update)(app_t *app, struct object_s *object);
-	void (*on_click)(app_t *app, struct object_s *object);
-	void (*on_hover)(app_t *app, struct object_s *object);
+	void (*on_click_start)(app_t *app, struct object_s *object, SDL_Event *event);
+	void (*on_click_end)(app_t *app, struct object_s *object, SDL_Event *event);
+	void (*on_click)(app_t *app, struct object_s *object, SDL_Event *event);
+	void (*on_hover_start)(app_t *app, struct object_s *object, SDL_Event *event);
+	void (*on_hover_end)(app_t *app, struct object_s *object, SDL_Event *event);
 } object_t;
 
 typedef struct app_s {
@@ -79,8 +85,10 @@ typedef struct app_s {
 	t_control control;
 	object_t *root;
 	TTF_Font *fonts[FONT_COUNT];
-	SDL_Rect glyphs[FONT_COUNT][GLYPHS_COUNT];
-	SDL_Texture *font_textures[FONT_COUNT];
+	char *composition;
+	char text[4096];
+	int cursor;
+	int selection_len;
 } app_t;
 
 

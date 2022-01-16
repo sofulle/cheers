@@ -7,7 +7,6 @@
 int main() {
 	app_t *app = app_init();
 
-	event_init(app);
 	scene_init(app);
 
 	while (true) {
@@ -15,11 +14,11 @@ int main() {
 
 		scene_update(app);
 
+		event_handle(app);
+
 		scene_draw(app);
 
 		scene_present(app);
-
-		event_handle(app);
 
 		SDL_Delay(16);
 	}
