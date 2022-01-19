@@ -72,10 +72,10 @@ style_t set_clear_style(void) {
     return style;
 }
 
-int max(int a, int b) {
-    if(a > b) return a;
-    else return b;
-}
+//int max(int a, int b) {
+//    if(a > b) return a;
+//    else return b;
+//}
 
 SDL_Rect get_object_rect(object_t *object) {
     SDL_Rect rect;

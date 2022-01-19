@@ -122,4 +122,5 @@ void draw_text(app_t *app, char *text, font_t font_id, SDL_Rect *rect, SDL_Color
 	
     SDL_RenderCopy(app->renderer, texture, NULL, &dest);
     SDL_DestroyTexture(texture);
+	SDL_FreeSurface(surf);
 }

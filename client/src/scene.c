@@ -45,7 +45,7 @@ void scene_init(app_t *app) {
     style_title.position = set_pos(50, 165, true, false);
     style_title.size = set_size(100, 42, true, false);
     style_title.anchor = ANCHOR_TOP_CENTER;
-    style_title.text_content = "Cheers!";
+    //style_title.text_content = "Cheers!";
     style_title.text_anchor = ANCHOR_CENTER_CENTER;
     style_title.font = set_font(FONT_ROBOTO_REGULAR_36, set_color(255, 255, 255, 255));
 
@@ -53,7 +53,7 @@ void scene_init(app_t *app) {
     style_subtitle.position = set_pos(50, 217, true, false);
     style_subtitle.size = set_size(100, 19, true, false);
     style_subtitle.anchor = ANCHOR_TOP_CENTER;
-    style_subtitle.text_content = "Lets start your own party!";
+    //style_subtitle.text_content = "Lets start your own party!";
     style_subtitle.text_anchor = ANCHOR_CENTER_CENTER;
     style_subtitle.font = set_font(FONT_ROBOTO_REGULAR_16, set_color(255, 255, 255, 255));
 
@@ -63,7 +63,7 @@ void scene_init(app_t *app) {
     style_input_name.padding.left = 15;
     style_input_name.anchor = ANCHOR_TOP_CENTER;
     style_input_name.background_color = set_color(62, 67, 101, 255);
-    style_input_name.text_content = app->text;
+    //style_input_name.text_content = app->text;
     style_input_name.text_anchor = ANCHOR_CENTER_LEFT;
     style_input_name.font = set_font(FONT_ROBOTO_REGULAR_16, set_color(255, 255, 255, 150));
 
@@ -83,7 +83,7 @@ void scene_init(app_t *app) {
     style_button_submit.padding.left = 15;
     style_button_submit.anchor = ANCHOR_TOP_CENTER;
     style_button_submit.background_color = set_color(62, 67, 101, 255);
-    style_button_submit.text_content = "Nam";
+    //style_button_submit.text_content = "Nam";
     style_button_submit.text_anchor = ANCHOR_CENTER_CENTER;
     style_button_submit.font = set_font(FONT_ROBOTO_REGULAR_18, set_color(255, 255, 255, 255));
 
@@ -92,7 +92,7 @@ void scene_init(app_t *app) {
     style_copyright.size = set_size(100, 14, true, false);
     style_copyright.anchor = ANCHOR_BOTTOM_CENTER;
     style_copyright.padding.bottom = 20;
-    style_copyright.text_content = "Cop & Past Inc.";
+    //style_copyright.text_content = "Cop & Past Inc.";
     style_copyright.text_anchor = ANCHOR_CENTER_CENTER;
     style_copyright.font = set_font(FONT_ROBOTO_REGULAR_12, set_color(255, 255, 255, 255));
 

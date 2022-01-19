@@ -46,7 +46,7 @@ Pos_t set_pos(int x, int y, bool is_percent_x, bool is_percent_y);
 offset_t set_pad(int left, int right, int top, int bottom);
 font_style_t set_font(font_t font, SDL_Color color);
 style_t set_clear_style(void);
-int max(int a, int b);
+//int max(int a, int b);
 SDL_Rect get_object_rect(object_t *object);
 
 
