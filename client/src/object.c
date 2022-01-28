@@ -7,7 +7,7 @@ object_t *object_add_root(void) {
 
     object = (object_t *) malloc(sizeof(object_t));
     if(object == NULL) {
-        printf("object_add_root: malloc returns NULL");
+        printf("object_add_root: malloc returns NULL\n");
         return NULL;
     }
     memset(object, 0, sizeof(object_t));
@@ -30,13 +30,13 @@ object_t *object_add(char id[256], object_t *parent, style_t *style, void (*on_s
     object_t *object = NULL;
 
     if(parent == NULL) {
-        printf("object_add: parent is NULL");
+        printf("object_add: parent is NULL\n");
         return NULL;
     }
 
     object = (object_t *) malloc(sizeof(object_t));
     if(object == NULL) {
-        printf("object_add: malloc returns NULL");
+        printf("object_add: malloc returns NULL\n");
         return NULL;
     }
     memset(object, 0, sizeof(object_t));
