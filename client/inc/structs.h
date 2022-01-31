@@ -54,22 +54,30 @@ typedef struct style_s {
 	Size_t size;
 	font_style_t font;
 	SDL_Color background_color;
+	SDL_Color global_background_color;
 	SDL_Texture *texture;
 	int z_index;
 	int global_z_index;
 	char *text_content;
+	char *text_placeholder;
 	anchor_t text_anchor;
+	bool is_static;
+	bool is_auto_height;
+	SDL_Texture *text_texture;
 } style_t;
 
 typedef struct object_s {
 	char id[256];
-	bool is_focused;
 	bool is_active;
 	style_t style;
 	struct object_s *parent;
 	vector_t *children;
 	bool is_hovered;
 	bool is_clicked;
+	bool is_focused;
+	bool is_hover_reacting;
+	bool is_click_reacting;
+	bool is_focus_reacting;
 	void (*on_start)(app_t *app, struct object_s *object);
 	void (*on_update)(app_t *app, struct object_s *object);
 	void (*on_click_start)(app_t *app, struct object_s *object, SDL_Event *event);
@@ -77,6 +85,8 @@ typedef struct object_s {
 	void (*on_click)(app_t *app, struct object_s *object, SDL_Event *event);
 	void (*on_hover_start)(app_t *app, struct object_s *object, SDL_Event *event);
 	void (*on_hover_end)(app_t *app, struct object_s *object, SDL_Event *event);
+	void (*on_focus_start)(app_t *app, struct object_s *object);
+	void (*on_focus_end)(app_t *app, struct object_s *object);
 } object_t;
 
 typedef struct app_s {
@@ -86,9 +96,8 @@ typedef struct app_s {
 	object_t *root;
 	TTF_Font *fonts[FONT_COUNT];
 	char *composition;
-	char text[4096];
-	int cursor;
-	int selection_len;
+	char *text_input_ptr;
+	int wheel_y;
 } app_t;
 
 

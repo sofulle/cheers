@@ -4,6 +4,9 @@
 
 
 #define APP_TITLE "Cheers! | Cop & Past Inc."
+#define APP_SCREEN_TITLE "Cheers!"
+#define APP_SCREEN_SUBTITLE "Lets start your own party!"
+#define APP_COPYRIGHT "Cop & Past Inc."
 #define START_SCREEN_WIDTH 420
 #define START_SCREEN_HEIGHT 630
 
@@ -15,5 +18,10 @@
 #define TEXT_MAX_LENGTH 1024
 #define WORD_MAX_LENGTH 32
 
+#define USERNAME_INPUT_TEXT "username..."
+#define PASSWORD_INPUT_TEXT "password..."
+#define LOGIN_BUTTON_TEXT "Log in"
+
+#define SCROLL_MULTIPLIER 10
 
 #endif // !CHEERS_DEFINITIONS_H

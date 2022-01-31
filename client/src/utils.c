@@ -12,6 +12,16 @@ SDL_Color set_color(int r, int g, int b, int a) {
     return color;
 }
 
+SDL_Color add_color(SDL_Color color, int add) {
+    SDL_Color ret;
+    ret.r = color.r + add;
+    ret.g = color.g + add;
+    ret.b = color.b + add;
+    ret.a = color.a;
+
+    return ret;
+}
+
 Size_t set_size(int width, int height, bool is_percent_width, bool is_percent_height) {
     Size_t size;
     size.width = width;
@@ -66,8 +76,11 @@ style_t set_clear_style(void) {
     style.z_index = 0;
     style.global_z_index = 0;
     style.text_content = NULL;
+    style.text_placeholder = NULL;
     style.text_anchor = ANCHOR_TOP_LEFT;
     style.padding = set_pad(0, 0, 0, 0);
+    style.is_static = false;
+    style.is_auto_height  = false;
 
     return style;
 }

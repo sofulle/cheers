@@ -32,4 +32,10 @@ typedef enum text_align_e {
 	TEXT_ALIGN_RIGHT
 } text_align_t;
 
+enum window_e {
+	WINDOW_LOGIN,
+	WINDOW_SIGNUP,
+	WINDOW_MAIN
+};
+
 #endif // !CHEERS_ENUMS_H

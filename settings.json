@@ -1,0 +1,11 @@
+{
+    "server_name": "Cop & Past Inc. Server",
+    "server_password": "",
+    "server_port": 1234,
+    "server_chats": [
+        {
+            "chat_name": "Room for real girls",
+            "chat_description": "description"
+        }
+    ]
+}

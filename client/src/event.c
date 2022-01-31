@@ -5,6 +5,8 @@
 void event_handle(app_t *app) {
 	SDL_Event event;
 
+	app->wheel_y = 0;
+
 	while (SDL_PollEvent(&event)) {
 		switch (event.type) {
 			case SDL_QUIT:
@@ -12,7 +14,9 @@ void event_handle(app_t *app) {
 				break;
 
 			case SDL_KEYDOWN:
-				//event_keydown(app, &event.key);
+				if (event.key.keysym.scancode == SDL_SCANCODE_BACKSPACE) {
+					if(app->text_input_ptr != NULL) app->text_input_ptr[strlen(app->text_input_ptr) - 1] = '\0';
+				}
 				break;
 			case SDL_KEYUP:
 				//event_keyup(app, &event.key);
@@ -23,7 +27,7 @@ void event_handle(app_t *app) {
 				break;
 
 			case SDL_TEXTINPUT:
-				strcat(app->text, event.text.text);
+				if(app->text_input_ptr != NULL) strcat(app->text_input_ptr, event.text.text);
 				break;
 
 			case SDL_MOUSEBUTTONDOWN:
@@ -34,6 +38,10 @@ void event_handle(app_t *app) {
 				break;
 			case SDL_MOUSEMOTION:
 				object_hierarchy_event_exec(app, app->root, &event, object_onhover);
+				break;
+
+			case SDL_MOUSEWHEEL:
+				app->wheel_y = event.wheel.y;
 				break;
 
 			default:
